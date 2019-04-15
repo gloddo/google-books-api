@@ -1,4 +1,4 @@
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 
 export function loadClient() {
   window.onGoogleScriptLoaded = () => {
@@ -16,11 +16,12 @@ export function loadClient() {
   };
 }
 
-export const searchDebounced = debounce(async val => {
+export const searchDebounced = throttle(async val => {
   if (val.length >= 2) {
     const result = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${val}`
+      `https://www.googleapis.com/books/v1/volumes?q=${val}&orderBy=relevance`
     );
-    return await result.json();
+    const json = await result.json();
+    return json.totalItems ? json : []
   }
-}, 300);
+}, 600);

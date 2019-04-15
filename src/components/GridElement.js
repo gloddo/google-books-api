@@ -6,22 +6,25 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 
 function GridElement(props) {
+  const { id, volumeInfo } = props.item;
+  const { title, authors, imageLinks } = volumeInfo;
   return (
-    <Grid item key={props.id}>
-      <Card>
+    <Grid item key={id} width="300">
+      <Card >
         <CardActionArea>
           <CardMedia
             component="img"
             alt="Contemplative Reptile"
-            height="140"
-            image={props.img}
+            image={imageLinks && imageLinks.thumbnail}
             title="Contemplative Reptile"
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              {props.title}
+              {title}
             </Typography>
-            <Typography component="p">{props.author}</Typography>
+            <Typography component="p">
+              {authors && authors.map((el, i) => i === 0 ? el : `, ${el}`)}
+            </Typography>
           </CardContent>
         </CardActionArea>
       </Card>

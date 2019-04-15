@@ -18,18 +18,24 @@ class App extends Component {
       searchValue: val,
     })
     const result = await searchDebounced(val)
-    console.log(result);
     
-    this.setState({
-      searchResult: result,
+    result && this.setState({
+      searchResult: result.items,
     })
+
+    if(val.length === 0) {
+      this.setState({
+        searchResult: []
+      })
+    }
     
   }
+ 
   render() {
     return (
       <div>
         <SearchBar onChange={this.getResult} value={this.state.searchValue} />
-        {/* <BookGrid result={this.state.searchResult} /> */}
+        <BookGrid result={this.state.searchResult} />
       </div>
     );
   }
