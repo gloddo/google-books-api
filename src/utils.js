@@ -16,12 +16,15 @@ export function loadClient() {
   };
 }
 
-export const searchDebounced = throttle(async val => {
+export const search = async (val, index) => {
   if (val.length >= 2) {
+    const i = index || 0
     const result = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${val}&orderBy=relevance`
+      `https://www.googleapis.com/books/v1/volumes?q=${val}&orderBy=relevance&startIndex=${i}`
     );
     const json = await result.json();
-    return json.totalItems ? json : []
+    return json.totalItems ? json : [];
   }
-}, 600);
+};
+
+export const searchDebounced = throttle(search, 1000);

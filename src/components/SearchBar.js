@@ -76,7 +76,7 @@ function SearchAppBar(props) {
             color="inherit"
             noWrap
           >
-            Wink's Google Books
+            Joe's Google Books API
           </Typography>
           <div className={classes.grow} />
           <div className={classes.search}>
