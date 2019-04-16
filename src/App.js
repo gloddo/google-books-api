@@ -24,19 +24,21 @@ class App extends Component {
   }
 
   getResult = async val => {
+    
+    if (val.length <= 2) {
+      this.setState({
+        searchResult: [],
+        totalItems: 0,
+        loading: false,
+        searchValue: val,
+      });
+      return null;
+    }
     this.setState({
       searchValue: val,
       loading: val.length >= 2
     });
 
-    if (val.length === 0) {
-      this.setState({
-        searchResult: [],
-        totalItems: 0,
-        loading: false
-      });
-      return null;
-    }
     const result = await searchThrottled(val);
 
     result &&
@@ -65,6 +67,7 @@ class App extends Component {
         searchResult: page.items,
         loading: false
       });
+      document.querySelector("html").scrollTop = 55;
   };
 
   render() {
@@ -72,23 +75,27 @@ class App extends Component {
       <div>
         <SearchBar onChange={this.getResult} value={this.state.searchValue} />
         <ProgressBar visible={this.state.loading} />
-        <Welcome visible={this.state.searchResult.length === 0}/>
-        <Pagination
-          totalPages={Math.floor(this.state.totalItems / 12)}
-          changePage={this.changePage}
-          actualPage={this.state.actualIndex / 12}
-        />
-        <BookGrid
-          result={this.state.searchResult}
-          totalItems={this.state.totalItems}
-          changePage={this.changePage}
-          actualIndex={this.state.actualIndex}
-        />
-        <Pagination
-          totalPages={Math.floor(this.state.totalItems / 12)}
-          changePage={this.changePage}
-          actualPage={this.state.actualIndex / 12}
-        />
+        <Welcome visible={this.state.searchValue.length < 2}/>
+        {this.state.searchValue.length >= 2 && (
+          <div>
+            <Pagination
+              totalPages={Math.floor(this.state.totalItems / 12)}
+              changePage={this.changePage}
+              actualPage={this.state.actualIndex / 12}
+            />
+            <BookGrid
+              result={this.state.searchResult}
+              totalItems={this.state.totalItems}
+              changePage={this.changePage}
+              actualIndex={this.state.actualIndex}
+            />
+            <Pagination
+              totalPages={Math.floor(this.state.totalItems / 12)}
+              changePage={this.changePage}
+              actualPage={this.state.actualIndex / 12}
+            />
+          </div>
+        )}
       </div>
     );
   }
