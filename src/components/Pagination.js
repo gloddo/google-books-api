@@ -3,13 +3,13 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 
 function Pagination(props) {
   return (
-    <div>
+    props.totalPages !==0 && (<div className="change-page">
       <KeyboardArrowLeft onClick={() => props.changePage(-10)} />
-      <KeyboardArrowRight onClick={() => props.changePage(10)} />
       <span>
-        Page {props.actualPage || 0} - {props.totalPages || 0}
+        Page {props.actualPage+1 || 0} - {props.totalPages+1 || 0}
       </span>
-    </div>
+      <KeyboardArrowRight onClick={() => props.changePage(10)} />
+    </div>)
   );
 }
 

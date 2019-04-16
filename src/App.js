@@ -3,6 +3,8 @@ import "./App.css";
 import SearchBar from "./components/SearchBar";
 import BookGrid from "./components/BookGrid";
 import { searchDebounced, search } from "./utils";
+import ProgressBar from "./components/ProgressBar";
+import Pagination from "./components/Pagination";
 
 class App extends Component {
   constructor(props) {
@@ -11,7 +13,8 @@ class App extends Component {
       searchValue: "",
       searchResult: [],
       totalItems: 0,
-      actualIndex: 0
+      actualIndex: 0,
+      loading: false,
     };
   }
 
@@ -21,7 +24,8 @@ class App extends Component {
 
   getResult = async val => {
     this.setState({
-      searchValue: val
+      searchValue: val,
+      loading: true,
     });
     const result = await searchDebounced(val);
 
@@ -29,12 +33,14 @@ class App extends Component {
       this.setState({
         searchResult: result.items,
         totalItems: result.totalItems,
-        actualIndex: 0
+        actualIndex: 0,
+        loading: false,
       });
 
     if (val.length === 0) {
       this.setState({
-        searchResult: []
+        searchResult: [],
+        loading: false
       });
     }
   };
@@ -47,12 +53,14 @@ class App extends Component {
         : 0;
     this.setState({
       actualIndex: newIndex,
+      loading: true,
     });
     window.location.hash = newIndex / 10;
     const page = await search(this.state.searchValue, newIndex);
     page &&
       this.setState({
-        searchResult: page.items
+        searchResult: page.items,
+        loading: false,
       });
   };
 
@@ -60,11 +68,22 @@ class App extends Component {
     return (
       <div>
         <SearchBar onChange={this.getResult} value={this.state.searchValue} />
+        <ProgressBar visible={this.state.loading}/>
+        <Pagination
+          totalPages={Math.floor(this.state.totalItems / 10)}
+          changePage={this.changePage}
+          actualPage={this.state.actualIndex / 10}
+        />
         <BookGrid
           result={this.state.searchResult}
           totalItems={this.state.totalItems}
           changePage={this.changePage}
           actualIndex={this.state.actualIndex}
+        />
+        <Pagination
+          totalPages={Math.floor(this.state.totalItems / 10)}
+          changePage={this.changePage}
+          actualPage={this.state.actualIndex / 10}
         />
       </div>
     );
