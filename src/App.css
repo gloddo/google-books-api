@@ -68,6 +68,7 @@
   background-color: #228a4b!IMPORTANT
 }
 
-html {
-  width: 100vw;
+.welcome {
+  text-align: center;
+  color: #00640080;
 }

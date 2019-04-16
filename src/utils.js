@@ -1,5 +1,6 @@
 import throttle from "lodash/throttle";
 
+//Snippet from Google Books API
 export function authenticate() {
   return window.gapi.auth2
     .getAuthInstance()
@@ -14,6 +15,7 @@ export function authenticate() {
     );
 }
 
+//Snippet from Google Books API
 export function loadClient() {
   return window.gapi.client
     .load("https://content.googleapis.com/discovery/v1/apis/books/v1/rest")
@@ -27,15 +29,17 @@ export function loadClient() {
     );
 }
 
+
 export const search = async (val, index) => {
   if (val.length >= 2) {
     const i = index || 0;
     const result = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${val}&orderBy=relevance&startIndex=${i}`
+      `https://www.googleapis.com/books/v1/volumes?q=${val}&maxResults=12&orderBy=relevance&startIndex=${i}`
     );
     const json = await result.json();
     return json.totalItems ? json : [];
   }
 };
 
-export const searchDebounced = throttle(search, 400);
+
+export const searchThrottled = throttle(search, 400);

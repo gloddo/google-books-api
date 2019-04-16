@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import "./App.css";
 import SearchBar from "./components/SearchBar";
 import BookGrid from "./components/BookGrid";
-import { searchDebounced, search } from "./utils";
+import { searchThrottled, search } from "./utils";
 import ProgressBar from "./components/ProgressBar";
 import Pagination from "./components/Pagination";
+import Welcome from "./components/Welcome"
 
 class App extends Component {
   constructor(props) {
@@ -27,7 +28,16 @@ class App extends Component {
       searchValue: val,
       loading: val.length >= 2
     });
-    const result = await searchDebounced(val);
+
+    if (val.length === 0) {
+      this.setState({
+        searchResult: [],
+        totalItems: 0,
+        loading: false
+      });
+      return null;
+    }
+    const result = await searchThrottled(val);
 
     result &&
       this.setState({
@@ -36,27 +46,19 @@ class App extends Component {
         actualIndex: 0,
         loading: false
       });
-
-    if (val.length === 0) {
-      this.setState({
-        searchResult: [],
-        totalItems: 0,
-        loading: false
-      });
-    }
   };
 
   changePage = async indexShift => {
-    if (this.state.totalItems < 10) return null;
+    if (this.state.totalItems < 12) return null; //Disables navigation buttons if there are no pages to go to
     const newIndex =
-      this.state.actualIndex + indexShift >= 0
+      this.state.actualIndex + indexShift >= 0 
         ? this.state.actualIndex + indexShift
         : 0;
     this.setState({
       actualIndex: newIndex,
       loading: true
     });
-    window.location.hash = newIndex / 10 + 1;
+    window.location.hash = newIndex / 12 + 1;
     const page = await search(this.state.searchValue, newIndex);
     page &&
       this.setState({
@@ -70,10 +72,11 @@ class App extends Component {
       <div>
         <SearchBar onChange={this.getResult} value={this.state.searchValue} />
         <ProgressBar visible={this.state.loading} />
+        <Welcome visible={this.state.searchResult.length === 0}/>
         <Pagination
-          totalPages={Math.floor(this.state.totalItems / 10)}
+          totalPages={Math.floor(this.state.totalItems / 12)}
           changePage={this.changePage}
-          actualPage={this.state.actualIndex / 10}
+          actualPage={this.state.actualIndex / 12}
         />
         <BookGrid
           result={this.state.searchResult}
@@ -82,9 +85,9 @@ class App extends Component {
           actualIndex={this.state.actualIndex}
         />
         <Pagination
-          totalPages={Math.floor(this.state.totalItems / 10)}
+          totalPages={Math.floor(this.state.totalItems / 12)}
           changePage={this.changePage}
-          actualPage={this.state.actualIndex / 10}
+          actualPage={this.state.actualIndex / 12}
         />
       </div>
     );
