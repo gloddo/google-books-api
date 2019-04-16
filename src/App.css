@@ -13,7 +13,7 @@
 
 .change-page svg:hover {
   cursor: pointer;
-  color: #3f51b5;
+  color: #228a4b;
 }
 
 .change-page svg {
@@ -31,4 +31,39 @@
     .books {
         padding: 15px;
     }
+}
+
+.rating, .price {
+  position: absolute;
+  background: white;
+  box-shadow: 3px 3px 4px 1px rgba(0,0,0,0.55);
+  
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating {
+  top: 15px;
+  left: 15px;
+  color: goldenrod;
+  width: 95px;
+}
+
+.rating svg {
+  font-size: 18px;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 1.2em;
+  right: 15px;
+  top: 360px;
+  min-width: 65px;
+}
+
+.MuiAppBar-colorPrimary-15 {
+  background-color: #228a4b!IMPORTANT
 }

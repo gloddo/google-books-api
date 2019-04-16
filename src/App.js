@@ -14,18 +14,18 @@ class App extends Component {
       searchResult: [],
       totalItems: 0,
       actualIndex: 0,
-      loading: false,
+      loading: false
     };
   }
 
   componentDidMount() {
-    window.location.hash = ""
+    window.location.hash = "";
   }
 
   getResult = async val => {
     this.setState({
       searchValue: val,
-      loading: true,
+      loading: val.length >= 2
     });
     const result = await searchDebounced(val);
 
@@ -34,12 +34,13 @@ class App extends Component {
         searchResult: result.items,
         totalItems: result.totalItems,
         actualIndex: 0,
-        loading: false,
+        loading: false
       });
 
     if (val.length === 0) {
       this.setState({
         searchResult: [],
+        totalItems: 0,
         loading: false
       });
     }
@@ -53,14 +54,14 @@ class App extends Component {
         : 0;
     this.setState({
       actualIndex: newIndex,
-      loading: true,
+      loading: true
     });
-    window.location.hash = newIndex / 10;
+    window.location.hash = newIndex / 10 + 1;
     const page = await search(this.state.searchValue, newIndex);
     page &&
       this.setState({
         searchResult: page.items,
-        loading: false,
+        loading: false
       });
   };
 
@@ -68,7 +69,7 @@ class App extends Component {
     return (
       <div>
         <SearchBar onChange={this.getResult} value={this.state.searchValue} />
-        <ProgressBar visible={this.state.loading}/>
+        <ProgressBar visible={this.state.loading} />
         <Pagination
           totalPages={Math.floor(this.state.totalItems / 10)}
           changePage={this.changePage}
